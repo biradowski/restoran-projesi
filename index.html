@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Birhat Restoran - Sipariş</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
+        .menu-card { background: white; padding: 20px; margin: 10px auto; width: 300px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        #basket { margin-top: 20px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Birhat Restoran Menü</h1>
+    <div id="menu">
+        <div class="menu-card">
+            <h3>Hamburger</h3>
+            <p>Fiyat: 120 TL</p>
+            <button onclick="siparisVer(1)">Sipariş Ver</button>
+        </div>
+        <div class="menu-card">
+            <h3>Kola</h3>
+            <p>Fiyat: 30 TL</p>
+            <button onclick="siparisVer(3)">Sipariş Ver</button>
+        </div>
+    </div>
+    <div id="basket"></div>
+
+    <script>
+        async function siparisVer(productId) {
+    const data = {
+        table_id: 1, // Masa numarası
+        items: [{ product_id: productId, quantity: 1 }]
+    };
+    
+    try {
+        // Buradaki portun 8080 olduğundan emin ol!
+        const response = await fetch('http://127.0.0.1:8080/orders', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        alert("Sipariş Başarıyla Gönderildi! Sipariş No: " + result.id);
+    } catch (error) {
+        console.error("Hata:", error);
+        alert("Sipariş gönderilemedi, terminali kontrol et!");
+    }
+}
+    </script>
+</body>
+</html>

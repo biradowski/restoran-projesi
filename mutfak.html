@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mutfak Paneli</title>
+    <style>
+        body { background: #121212; color: white; font-family: sans-serif; padding: 20px; }
+        .card { background: #222; border: 1px solid #ff9800; padding: 15px; margin: 10px; border-radius: 10px; display: inline-block; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Mutfak Paneli</h1>
+    <div id="status">Sistem Kontrol Ediliyor...</div>
+    <div id="grid"></div>
+
+    <script>
+        async function yenile() {
+            try {
+                const res = await fetch('http://127.0.0.1:8080/orders');
+                if (!res.ok) throw new Error("API Hatası");
+                const orders = await res.json();
+                
+                document.getElementById('status').innerText = "Bağlantı Başarılı. Sipariş sayısı: " + orders.length;
+                const grid = document.getElementById('grid');
+                grid.innerHTML = '';
+
+                orders.forEach(o => {
+                    grid.innerHTML += `<div class="card">
+                        <h3>Masa ${o.table_id}</h3>
+                        <p>Sipariş #${o.id}</p>
+                        <p>Durum: Hazırlanıyor</p>
+                    </div>`;
+                });
+            } catch (err) {
+                document.getElementById('status').innerText = "HATA: Python sunucusu çalışmıyor olabilir!";
+                console.error(err);
+            }
+        }
+        setInterval(yenile, 2000);
+        yenile();
+    </script>
+</body>
+</html>
